@@ -1,0 +1,4 @@
+.idea
+texercise.egg-info
+**/__pycache__
+*.pyc

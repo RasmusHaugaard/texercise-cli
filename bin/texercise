@@ -1,0 +1,29 @@
+#!/bin/python
+import argparse
+
+import click
+
+import texercise
+
+context, (course, email, token) = texercise.load_config()
+
+
+@click.group()
+def cli():
+    pass
+
+
+@click.group('course')
+def course():
+    pass
+
+
+@click.command()
+def ls():
+    click.echo("ls")
+
+
+cli.add_command(course)
+course.add_command(ls)
+
+cli()
