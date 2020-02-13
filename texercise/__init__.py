@@ -7,7 +7,6 @@ import re
 import urllib.parse
 from typing import List, Tuple
 import sys
-import datetime
 
 import click
 
