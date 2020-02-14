@@ -7,6 +7,7 @@ import time
 import zipfile
 import io
 import shutil
+import subprocess
 
 import click
 import requests
@@ -26,6 +27,23 @@ context, course_folder, exercise_folder, credentials = texercise.load_config()
 _course_name, _user_type, _email, _token = credentials
 if _user_type == ADMIN:
     _course_name = None
+
+
+def validate_intent(validation_str):
+    intent = input("{} (y/N)".format(validation_str)).strip().lower() in ('y', 'yes')
+    if not intent:
+        sys.exit()
+
+
+current_version = texercise.parse_version(texercise.__version__)
+latest_version = texercise.parse_version(texercise.get_latest_version_str())
+if current_version < latest_version:
+    print("A newer version of texercise is available.\n"
+          "Please update it before continuing.\n"
+          "$ pip install --upgrade texercise\n")
+    validate_intent("Should texercise attempt automatic update?")
+    subprocess.Popen([sys.executable, '-m', 'pip', 'install', '--upgrade', 'texercise']).wait()
+    sys.exit()
 
 
 # groups
@@ -63,12 +81,6 @@ if _user_type == ADMIN:
 if _user_type in (ADMIN, TEACHER):
     cli.add_command(student)
 user_cli_groups = (admin, teacher, student)
-
-
-def validate_intent(validation_str):
-    intent = input("{} (y/N)".format(validation_str)).strip().lower() in ('y', 'yes')
-    if not intent:
-        sys.exit()
 
 
 # starting a context

@@ -1,8 +1,9 @@
 import setuptools
+from texercise import __version__
 
 setuptools.setup(
     name='texercise',
-    version='0.0.1',
+    version=__version__,
     author='Rasmus Laurvig Haugaard',
     author_email='rasmus.l.haugaard@gmail.com',
     description='command line interface for exercises',

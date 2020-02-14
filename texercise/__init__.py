@@ -7,8 +7,22 @@ import re
 import urllib.parse
 from typing import List, Tuple
 import sys
+from .version import __version__
 
+import requests
 import click
+
+
+def get_latest_version_str():
+    r = requests.get('https://pypi.python.org/pypi/texercise/json')
+    response = r.json()
+    return response['info']['version']
+
+
+def parse_version(version_str):
+    major, minor, micro = [int(s) for s in version_str.split(".")]
+    return major, minor, micro
+
 
 base_url = 'http://texercise.rasmushaugaard.dk'
 

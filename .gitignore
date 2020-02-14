@@ -1,4 +1,6 @@
 .idea
+build
+dist
 texercise.egg-info
 **/__pycache__
 *.pyc
