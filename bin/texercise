@@ -201,7 +201,7 @@ for group, user_type in zip(user_cli_groups, USER_TYPES):
     @click.argument('email', callback=texercise.validate_email)
     def reset_token(course_name, email, user_type=user_type):
         res = requests.delete(
-            '{}/courses/{}/{}/{}'.format(base_url, course_name, user_type, email),
+            '{}/courses/{}/{}/{}/token'.format(base_url, course_name, user_type, email),
             json={'credentials': credentials}
         )
         print(res.json()[MESSAGE])
