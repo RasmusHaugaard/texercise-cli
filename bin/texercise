@@ -296,11 +296,17 @@ if context == 'course' or _user_type == TEACHER:
 
 
 def attempt_and_await_response(folder, tests=None):
-    z = texercise.zipdir(folder)
+    files = list(texercise.fn_match_recursive(folder, texercise.upload_ignore))
+    sorted_fnames = sorted(str(fp.relative_to(folder)) for fp in files)
+    validate_intent(
+        "Will upload the following files:\n{}\n"
+        "Continue?".format("\n".join(["  " + fname for fname in sorted_fnames]))
+    )
+    zip_data = texercise.zip_files(files, root=folder, max_size_kb=1024)
     data = {"credentials": credentials, "tests": tests}
     r = requests.post(
         url='{}/courses/{}/exercises/{}/attempts'.format(base_url, _course_name, exercise_folder.name),
-        files={'archive': open(z, 'rb'), 'data': json.dumps(data)},
+        files={'archive': zip_data, 'data': json.dumps(data)},
     )
     if not r.ok:
         print(r.text)
@@ -383,7 +389,7 @@ def upload_exercise(skip_test):
     if not template_dir.glob('*'):
         validate_intent("Template folder 'exercise-folder/template' is empty.\n"
                         "Are you sure you want to upload an exercise with no template?")
-    zip_template = texercise.zipdir(
+    zip_template = texercise.zip_files(
         template_dir, max_size_kb=1024,
         size_e_message='Template folder too large'
     )
@@ -492,9 +498,6 @@ def start(exercise_name):
 
 @click.command('submit')
 def submit():
-    validate_intent('Your code will be uploaded and registered as an attempt.\n'
-                    'It can be a good idea to test the code yourself first.\n'
-                    'Do you want to submit?')
     success = attempt_and_await_response(exercise_folder, None)
     if success:
         print('Congratulations!')
